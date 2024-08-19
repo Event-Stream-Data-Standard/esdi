@@ -23,14 +23,7 @@ from typing_extensions import NotRequired, TypedDict
 # which vastly simplifies many data analysis pipelines.
 
 # We define some codes for particularly important events
-birth_code = "MEDS_BIRTH"
-death_code = "MEDS_DEATH"
 
-subject_id_field = "subject_id"
-time_field = "time"
-code_field = "code"
-
-subject_id_dtype = pa.int64()
 
 
 def data_schema(custom_properties=[]):

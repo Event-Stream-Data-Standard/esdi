@@ -1,15 +1,18 @@
 from meds._version import __version__  # noqa
 
+from .shared_constants import (
+    subject_id_field, time_field, code_field, numeric_value_field, subject_id_dtype, time_dtype, code_dtype,
+    numeric_value_dtype, birth_code, death_code
+)
+
 from .schema import (
     CodeMetadata,
     DatasetMetadata,
     Label,
-    birth_code,
     code_field,
     code_metadata_schema,
     data_schema,
     dataset_metadata_schema,
-    death_code,
     held_out_split,
     label_schema,
     subject_id_dtype,
