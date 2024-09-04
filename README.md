@@ -18,7 +18,7 @@ up MEDS, we will define some key terminology that we use in this standard.
      In particular, in almost all structured, longitudinal datasets, a measurement can be described as
      consisting of a tuple containing a `subject_id` (who this measurement is about); a `time` (when this
      measurement happened); some categorical qualifier describing what was measured, which we will call a
-     `code`; a value of a given type, such as a `numerical_value`, a `text_value`, or a `categorical_value`;
+     `code`; a value of a given type, such as a `numeric_value`, a `text_value`, or a `categorical_value`;
      and possibly one or more additional measurement properties that describe the measurement in a
      non-standardized manner.
 
@@ -55,12 +55,12 @@ found in the following subfolders:
   - `$MEDS_ROOT/metdata/subject_splits.parquet`: This schema contains information in the _subject split
     schema_ about what splits different subjects are in.
 
-Task label dataframes are stored in the _TODO label_ schema, in a file path that depends on both a
+Task label dataframes are stored in the `label_schema`, in a file path that depends on both a
 `$TASK_ROOT` directory where task label dataframes are stored and a `$TASK_NAME` parameter that separates
 different tasks from one another. In particular, the file glob `glob($TASK_ROOT/$TASK_NAME/**/*.parquet)` will
-retrieve a sharded set of dataframes in the _TODO label_ schema where the sharding matches up precisely with
+retrieve a sharded set of dataframes in the `label_schema` where the sharding may or may not match up with
 the sharding used in the raw `$MEDS_ROOT/data/**/*.parquet` files (e.g., the file
-`$TASK_ROOT/$TASK_NAME/$SHARD_NAME.parquet` will cover the labels for the same set of subjects as are
+`$TASK_ROOT/$TASK_NAME/$SHARD_NAME.parquet` may cover the labels for the same set of subjects as are
 contained in the raw data file at `$MEDS_ROOT/data/**/*.parquet`). Note that (1) `$TASK_ROOT` may be a subdir
 of `$MEDS_ROOT` (e.g., often `$TASK_ROOT` will be set to `$MEDS_ROOT/tasks`), (2) `$TASK_NAME` may have `/`s
 in it, thereby rendering the task label directory a deep, nested subdir of `$TASK_ROOT`, and (3) in some
@@ -86,14 +86,15 @@ In addition, it can contain any number of custom properties to further enrich ob
 function below generates a pyarrow schema for a given set of custom properties.
 
 ```python
-def data(custom_properties=[]):
+def data_schema(custom_properties=[]):
     return pa.schema(
         [
-            ("subject_id", pa.int64()),
-            ("time", pa.timestamp("us")), # Static events will have a null timestamp
-            ("code", pa.string()),
-            ("numeric_value", pa.float32()),
-        ] + custom_properties
+            (subject_id_field, subject_id_dtype),
+            (time_field, time_dtype),  # Static events will have a null timestamp
+            (code_field, code_dtype),
+            (numeric_value_field, numeric_value_dtype),
+        ]
+        + custom_properties
     )
 ```
 
